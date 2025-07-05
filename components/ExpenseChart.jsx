@@ -42,7 +42,7 @@ export default function ExpenseChart({ transactions }) {
 </div>
 
 
-      <div className="flex justify-center">
+      <div className="flex h-[50%] w-full justify-center">
         {chartType === "pie" && (
           <PieChart width={300} height={300}>
             <Pie
