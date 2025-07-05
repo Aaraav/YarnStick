@@ -125,19 +125,21 @@ fetchBudgets();
       </div>
 <ExportCSV transactions={transactions} />
 
-          <TransactionList
-            transactions={
-              selectedCategory === 'All'
-                ? transactions
-                : transactions.filter((t) => t.category === selectedCategory)
-            }
-            onEdit={setSelected}
-            onChange={() => {
-              fetchTransactions();
-              toastFlags.current = { fifty: false, ninety: false };
-            }}
-          />
-        </div>
+        <div className="max-h-[400px] overflow-y-auto rounded-md shadow-sm border bg-white p-2">
+  <TransactionList
+    transactions={
+      selectedCategory === 'All'
+        ? transactions
+        : transactions.filter((t) => t.category === selectedCategory)
+    }
+    onEdit={setSelected}
+    onChange={() => {
+      fetchTransactions();
+      toastFlags.current = { fifty: false, ninety: false };
+    }}
+  />
+</div>
+
         <BudgetSetter
   budgets={budgets}
   onUpdate={(cat, value) =>
