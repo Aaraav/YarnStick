@@ -7,6 +7,10 @@ import TransactionForm from '@/components/TransactionForm';
 import TransactionList from '@/components/TransactionList';
 import SummaryCards from '@/components/SummaryCards';
 import ExpenseChart from '@/components/ExpenseChart';
+import BudgetChart from '@/components/BudgetChart';
+import BudgetSetter from '@/components/BudgetSetter';
+import SpendingInsights from '@/components/SpendingInsights';
+import ExportCSV from '@/components/ExportCSV';
 
 const categories = [
   'Food',
@@ -22,6 +26,7 @@ export default function HomePage() {
   const [selected, setSelected] = useState(null);
   const [monthlyIncome, setMonthlyIncome] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState('All');
+const [budgets, setBudgets] = useState([]); 
 
   const toastFlags = useRef({ fifty: false, ninety: false });
 
@@ -30,6 +35,17 @@ export default function HomePage() {
     const data = await res.json();
     setTransactions(data);
   };
+
+  const fetchBudgets = async () => {
+  const res = await fetch('/api/budgets');
+  const data = await res.json();
+  setBudgets(Array.isArray(data) ? data : []); // ✅ Ensure data is an array
+};
+
+useEffect(()=>{
+fetchBudgets();
+},[])
+
 
   const calculateSpendingPercent = () => {
     const totalSpent = transactions
@@ -107,6 +123,7 @@ export default function HomePage() {
           </button>
         ))}
       </div>
+<ExportCSV transactions={transactions} />
 
           <TransactionList
             transactions={
@@ -121,6 +138,25 @@ export default function HomePage() {
             }}
           />
         </div>
+        <BudgetSetter
+  budgets={budgets}
+  onUpdate={(cat, value) =>
+    setBudgets((prev) => ({ ...prev, [cat]: value }))
+  }
+/>
+
+<SpendingInsights
+  budgets={budgets}
+  transactions={
+    selectedCategory === 'All'
+      ? transactions
+      : transactions.filter((t) => t.category === selectedCategory)
+  }
+  selectedCategory={selectedCategory}
+/>
+
+<BudgetChart budgets={budgets} transactions={transactions} />
+
 
 <ExpenseChart
   allTransactions={transactions}
