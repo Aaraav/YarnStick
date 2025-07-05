@@ -11,14 +11,14 @@ export async function GET() {
 export async function POST(req) {
   try {
     const body = await req.json();
-    const { amount, date, description } = body;
+    const { amount, date, description,category } = body;
 
     if (!amount || !date || !description) {
       return NextResponse.json({ error: 'All fields are required.' }, { status: 400 });
     }
 
     await connectDB();
-    const transaction = await Transaction.create({ amount, date, description });
+    const transaction = await Transaction.create({ amount, date, description,category });
 
     return NextResponse.json(transaction, { status: 201 });
   } catch (error) {

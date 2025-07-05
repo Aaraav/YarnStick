@@ -6,13 +6,13 @@ export async function PUT(req, { params }) {
   try {
     await connectDB();
     const { id } = params;
-    const { amount, date, description } = await req.json();
+    const { amount, date, description,category } = await req.json();
 
     if (!id || !amount || !date || !description) {
       return NextResponse.json({ error: "All fields are required." }, { status: 400 });
     }
 
-    await Transaction.findByIdAndUpdate(id, { amount, date, description });
+    await Transaction.findByIdAndUpdate(id, { amount, date, description,category});
     return NextResponse.json({ message: "Transaction updated successfully." });
   } catch (err) {
     return NextResponse.json({ error: "Failed to update transaction." }, { status: 500 });

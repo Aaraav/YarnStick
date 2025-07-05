@@ -6,6 +6,15 @@ const TransactionSchema = new mongoose.Schema(
     amount: { type: Number, required: true },
     date: { type: Date, required: true },
     description: { type: String, required: true },
+
+    //stage-2
+    category: {
+type: String,
+  required: true,
+  enum: ['Food', 'Transport', 'Entertainment', 'Bills', 'Shopping', 'Other'],
+  default: 'Other',
+}
+
   },
   { timestamps: true }
 );

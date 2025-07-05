@@ -1,36 +1,65 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+const categoryOrder = [
+  'Food',
+  'Transport',
+  'Entertainment',
+  'Bills',
+  'Shopping',
+  'Other',
+];
 
-export default function TransactionList({ transactions, onEdit, onDeleteComplete }) {
+export default function TransactionList({ transactions, onEdit, onChange }) {
   const handleDelete = async (id) => {
     await fetch(`/api/transactions/${id}`, { method: "DELETE" });
-    onDeleteComplete();
+    onChange();
   };
 
+  // Group transactions by category
+  const grouped = categoryOrder.reduce((acc, cat) => {
+    acc[cat] = transactions.filter((t) => t.category === cat);
+    return acc;
+  }, {});
+
   return (
-    <div className="space-y-3">
-      <h2 className="text-xl font-semibold text-gray-800">Transaction History</h2>
-      {transactions.map((t) => (
-        <div
-          key={t._id}
-          className="flex justify-between items-center border border-gray-200 shadow-sm rounded-lg px-4 py-3 bg-gray-50 hover:bg-white transition"
-        >
-          <div>
-            <div className="text-lg font-medium text-gray-800">₹{t.amount}</div>
-            <div className="text-sm text-gray-600">{t.description}</div>
-            <div className="text-xs text-gray-400">{t.date.slice(0, 10)}</div>
+    <div className="space-y-6">
+      {categoryOrder.map((category) =>
+        grouped[category] && grouped[category].length > 0 ? (
+          <div key={category}>
+            {/* <h2 className="text-lg font-bold text-indigo-700 mb-2">{category}</h2> */}
+            <div className="space-y-3">
+              {grouped[category].map((t) => (
+                <div
+                  key={t._id}
+                  className="p-4 rounded shadow bg-white flex justify-between items-center hover:bg-gray-50"
+                >
+                  <div>
+                    <p className="font-semibold">{t.description}</p>
+                    <p className="text-sm text-gray-600">{t.date}</p>
+                  </div>
+                  <div className="text-right space-x-2">
+                    <span className="text-indigo-600 font-bold">₹{t.amount}</span>
+                  <button
+  onClick={() => onEdit(t)}
+  className="px-3 py-1 rounded bg-blue-100 text-blue-700 text-sm font-medium hover:bg-blue-200 transition"
+>
+  Edit
+</button>
+
+                    
+                    <button
+                      onClick={() => handleDelete(t._id)}
+                      className="text-sm text-red-500 hover:underline"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-          <div className="flex space-x-2">
-            <Button onClick={() => onEdit(t)} size="sm" className="bg-yellow-400 hover:bg-yellow-500 text-white">
-              Edit
-            </Button>
-            <Button onClick={() => handleDelete(t._id)} size="sm" variant="destructive" className="bg-red-500 hover:bg-red-700 text-white">
-              Delete
-            </Button>
-          </div>
-        </div>
-      ))}
+        ) : null
+      )}
     </div>
   );
 }
