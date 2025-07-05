@@ -25,7 +25,7 @@ export default function TransactionList({ transactions, onEdit, onDeleteComplete
             <Button onClick={() => onEdit(t)} size="sm" className="bg-yellow-400 hover:bg-yellow-500 text-white">
               Edit
             </Button>
-            <Button onClick={() => handleDelete(t._id)} size="sm" variant="destructive">
+            <Button onClick={() => handleDelete(t._id)} size="sm" variant="destructive" className="bg-red-500 hover:bg-red-700 text-white">
               Delete
             </Button>
           </div>
